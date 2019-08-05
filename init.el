@@ -139,9 +139,9 @@
        ;;irc               ; how neckbeards socialize
        ;;(rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
-       (write            ; emacs as a word processor (latex + org + markdown)
-        +wordnut         ; wordnet (wn) search
-        +langtool)       ; a proofreader (grammar/style check) for Emacs
+       ;; (write            ; emacs as a word processor (latex + org + markdown)
+       ;;  +wordnut         ; wordnet (wn) search
+       ;;  +langtool)       ; a proofreader (grammar/style check) for Emacs
 
        :collab
        ;;floobits          ; peer programming for a price
@@ -155,4 +155,18 @@
        ;; The default module sets reasonable defaults for Emacs. It also
        ;; provides a Spacemacs-inspired keybinding scheme and a smartparens
        ;; config. Use it as a reference for your own modules.
-       (default +bindings +smartparens))
+       (default +bindings +evil-cleverparens))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("155a5de9192c2f6d53efcc9c554892a0d87d87f99ad8cc14b330f4f4be204445" "d0c943c37d6f5450c6823103544e06783204342430a36ac20f6beb5c2a48abe3" "34c99997eaa73d64b1aaa95caca9f0d64229871c200c5254526d0062f8074693" "b0fd04a1b4b614840073a82a53e88fe2abc3d731462d6fde4e541807825af342" "a8c210aa94c4eae642a34aaf1c5c0552855dfca2153fa6dd23f3031ce19453d4" "43c808b039893c885bdeec885b4f7572141bd9392da7f0bd8d8346e02b2ec8da" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

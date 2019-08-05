@@ -14,4 +14,7 @@
 (package! org)
 (package! prettier-js)
 (package! blacken)
+(package! evil-cleverparens)
+(package! flycheck-joker)
+
 ;; (package! ac-js2)
