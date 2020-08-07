@@ -4,15 +4,11 @@
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(global-auto-revert-mode t)
-
-(load-theme 'doom-dark+ t)
-
 (setq
+ doom-theme 'doom-dark+
  doom-font (font-spec :family "JetBrains Mono")
  doom-big-font (font-spec :family "Mononoki" :size 14)
  doom-themes-enable-italic t
-;; ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-top-center))
  web-mode-markup-indent-offset 2
  web-mode-code-indent-offset 2
  js-indent-level 2
@@ -23,12 +19,13 @@
  company-tooltip-flip-when-above t
  company-dabbrev-downcase nil)
 
-;; (add-to-list 'ivy-re-builders-alist
-;;              '(counsel-projectile-find-file . ivy--regex-ignore-order))
+(after! cider-mode
+  (setq cider-clojure-cli-global-options "-R:test"))
 
-
-(setq cider-clojure-cli-global-options "-R:test")
-
+(use-package! magit
+  :config
+  (set-default 'magit-stage-all-confirm nil)
+  (set-default 'magit-unstage-all-confirm nil))
 
 (use-package! lispyville
   :init
@@ -43,24 +40,29 @@
                               (additional-wrap normal visual insert)
                               additional-insert)))
 
-(evil-define-key 'insert 'lispyville-mode "(" 'lispy-parens)
-(evil-define-key 'insert 'lispyville-mode "[" 'lispy-brackets)
-(evil-define-key 'insert 'lispyville-mode "{" 'lispy-braces)
-(evil-define-key 'normal 'global "\"" 'lispy-quotes)
-(evil-define-key 'visual 'global "\"" 'lispy-quotes)
-(evil-define-key 'insert 'global "\"" 'lispy-quotes)
-
-
-;; (use-package! evil-cleverparens
-;;   ;:hook clojure-mode
-;;   :config
-;;   (add-hook 'clojure-mode-hook #'evil-cleverparens-mode)
-;;   )
-
 (use-package! flycheck-clj-kondo
   :after clojure-mode
   :config
   (require 'flycheck-clj-kondo))
+
+(use-package! lsp-mode
+  :after clojure-mode
+  :ensure t
+  :hook ((clojure-mode . lsp)
+         (clojurec-mode . lsp)
+         (clojurescript-mode . lsp))
+  :config
+  ;; add paths to your local installation of project mgmt tools, like lein
+  (setenv "PATH" (concat
+                   "/usr/local/bin" path-separator
+                   (getenv "PATH")))
+  (dolist (m '(clojure-mode
+               clojurec-mode
+               clojurescript-mode
+               clojurex-mode))
+     (add-to-list 'lsp-language-id-configuration `(,m . "clojure")))
+  (setq lsp-clojure-server-command '("bash" "-c" "clojure-lsp") ;; Optional: In case `clojure-lsp` is not in your PATH
+        lsp-enable-indentation nil))
 
 (map! ;; sexp navigation
   :nmvo doom-leader-key nil
@@ -71,6 +73,14 @@
   ;; :n "C-j"   #'evil-window-down
   ;; :n "C-k"   #'evil-window-up
   :n "C-l"   #'evil-window-right
+  :n "\""    #'lispy-quotes
+  :n "\""    #'lispy-quotes
+  :n "\""    #'lispy-quotes
+
+  (:after lispyville-mode
+   :n "(" #'lispy-parens
+   :n "[" #'lispy-brackets
+   :n "{" #'lispy-braces)
 
   (:after cider-mode
     (:leader
@@ -112,4 +122,4 @@
       :n  "T"  #'cider-test-run-test)
     (:after cider-browse-ns-mode
       (:map cider-browse-ns-mode-map
-        :n "RET"       #'cider-browse-ns-operate-at-point))))
+       :n "RET"       #'cider-browse-ns-operate-at-point))))
