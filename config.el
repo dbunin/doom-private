@@ -6,8 +6,8 @@
 
 (setq
  doom-theme 'doom-dark+
- doom-font (font-spec :family "JetBrains Mono")
- doom-big-font (font-spec :family "Mononoki" :size 14)
+ doom-font (font-spec :family "Fira Code")
+ doom-big-font (font-spec :family "Fira Code" :size 14.0)
  doom-themes-enable-italic t
  web-mode-markup-indent-offset 2
  web-mode-code-indent-offset 2
@@ -22,14 +22,9 @@
 (after! cider-mode
   (setq cider-clojure-cli-global-options "-R:test"))
 
-(use-package! magit
-  :config
-  (set-default 'magit-stage-all-confirm nil)
-  (set-default 'magit-unstage-all-confirm nil))
-
 (use-package! lispyville
   :init
-  (general-add-hook '(emacs-lisp-mode-hook lisp-mode-hook clojure-mode-hook cider-repl-mode-hook) #'lispyville-mode)
+  (add-hook! '(emacs-lisp-mode-hook lisp-mode-hook clojure-mode-hook cider-repl-mode-hook) #'lispyville-mode)
   :config
   (lispyville-set-key-theme '(operators
                               text-objects
@@ -40,35 +35,40 @@
                               (additional-wrap normal visual insert)
                               additional-insert)))
 
-(use-package! flycheck-clj-kondo
-  :after clojure-mode
-  :config
-  (require 'flycheck-clj-kondo))
+;; (use-package! flycheck-clj-kondo
+;;   :after clojure-mode
+;;   :config
+;;   (require 'flycheck-clj-kondo))
 
-(use-package! lsp-mode
-  :after clojure-mode
-  :ensure t
-  :hook ((clojure-mode . lsp)
-         (clojurec-mode . lsp)
-         (clojurescript-mode . lsp))
-  :config
-  ;; add paths to your local installation of project mgmt tools, like lein
-  (setenv "PATH" (concat
-                   "/usr/local/bin" path-separator
-                   (getenv "PATH")))
-  (dolist (m '(clojure-mode
-               clojurec-mode
-               clojurescript-mode
-               clojurex-mode))
-     (add-to-list 'lsp-language-id-configuration `(,m . "clojure")))
-  (setq lsp-clojure-server-command '("bash" "-c" "clojure-lsp") ;; Optional: In case `clojure-lsp` is not in your PATH
-        lsp-enable-indentation nil))
+(after! clojure-mode
+  (format-all-mode -1)
+  ;; (add-hook 'before-save-hook #'+format|buffer)
+  )
 
-(map! ;; sexp navigation
-  :nmvo doom-leader-key nil
-  :nmvo doom-localleader-key nil
+;; (use-package! lsp-mode
+;;   :after clojure-mode
+;;   :ensure t
+;;   :hook ((clojure-mode . lsp)
+;;          (clojurec-mode . lsp)
+;;          (clojurescript-mode . lsp))
+;;   :config
+;;   ;; add paths to your local installation of project mgmt tools, like lein
+;;   (setenv "PATH" (concat
+;;                    "/usr/local/bin" path-separator
+;;                    (getenv "PATH")))
+;;   (dolist (m '(clojure-mode
+;;                clojurec-mode
+;;                clojurescript-mode
+;;                clojurex-mode))
+;;      (add-to-list 'lsp-language-id-configuration `(,m . "clojure")))
+;;   (setq lsp-clojure-server-command '("bash" "-c" "clojure-lsp") ;; Optional: In case `clojure-lsp` is not in your PATH
+;;         lsp-enable-indentation nil))
 
-  ;; ;; Easier window navigation
+(map!
+  ;; :nmvo doom-leader-key nil
+  ;; :nmvo doom-localleader-key nil
+
+  ;; Easier window navigation
   :n "C-h"   #'evil-window-left
   ;; :n "C-j"   #'evil-window-down
   ;; :n "C-k"   #'evil-window-up
@@ -83,43 +83,33 @@
    :n "{" #'lispy-braces)
 
   (:after cider-mode
-    (:leader
-      :desc "Lookup documentation at point" :n  "d"  #'cider-doc
-      :desc "Jump to definition at point"   :n  "l"  #'cider-find-var
-      :desc "eval" :prefix "e"
-         :n "e" #'cider-eval-last-sexp
-         :n "v" #'cider-eval-defun-at-point
-         :n "b" #'cider-eval-buffer
-         :n "D" #'cider-insert-defun-in-repl
-         :n "e" #'cider-eval-last-sexp
-         :n "E" #'cider-insert-last-sexp-in-repl
-         :n "r" #'cider-eval-region
-         :n "R" #'cider-insert-region-in-repl
-         :n "u" #'cider-undef
-      :desc "refactor" :prefix "r"
-         :n "t" #'clojure-thread-first-all
-         :n "T" #'clojure-thread-last-all
-         :n "-" #'clojure-cycle-privacy
-         :n "n" #'clojure-cycle-not
-         :n "i" #'clojure-cycle-if
-         :n "w" #'clojure-cycle-when
-         :n "l" #'clojure-introduce-let
-         :n "L" #'clojure-move-to-let)
-    (:map cider-mode-map
-      :localleader
-      :n  "'"  #'cider-jack-in
-      :n  "\"" #'cider-jack-in-clj&cljs
-      :n  "r"  #'cider-switch-to-repl-buffer
-      :n  "n"  #'cider-repl-set-ns
-      :n  "j"  #'cider-find-var
-      (:desc "docs" :prefix "d"
-        :desc "Browse Namespace"  :n  "n" #'cider-browse-ns
-        :desc "Browse Spec"       :n  "s" #'cider-browse-spec)
-      :n  "h"  #'cider-doc
-      :n  "c"  #'cider-repl-clear-buffer
-      :n  "i"  #'cider-inspect-last-result
-      :n  "t"  #'cider-test-run-ns-tests
-      :n  "T"  #'cider-test-run-test)
-    (:after cider-browse-ns-mode
-      (:map cider-browse-ns-mode-map
-       :n "RET"       #'cider-browse-ns-operate-at-point))))
+    :n ",eb" #'cider-eval-buffer
+    :n ",ed" #'cider-eval-defun-at-point
+    :n ",eD" #'cider-insert-defun-in-repl
+    :n ",ee" #'cider-eval-last-sexp
+    :n ",eE" #'cider-insert-last-sexp-in-repl
+    :n ",er" #'cider-eval-region
+    :n ",eR" #'cider-insert-region-in-repl
+    :n ",eu" #'cider-undef
+    :n ",rt" #'lsp-clojure-thread-first-all
+    :n ",rT" #'lsp-clojure-thread-last-all
+    :n ",r-" #'clojure-cycle-privacy
+    :n ",rn" #'clojure-cycle-not
+    :n ",ri" #'clojure-cycle-if
+    :n ",rw" #'clojure-cycle-when
+    :n ",rl" #'clojure-introduce-let
+    :n ",rL" #'clojure-move-to-let)
+    ;; (:leader
+    ;;   :desc "Lookup documentation at point" :n  "d"  #'cider-doc
+    ;;   :desc "Jump to definition at point"   :n  "l"  #'cider-find-var
+    ;;   :desc "eval" :prefix "e"
+    ;;      :n "e" #'cider-eval-last-sexp
+    ;;      :n "v" #'cider-eval-defun-at-point
+    ;;      :n "b" #'cider-eval-buffer
+    ;;      :n "D" #'cider-insert-defun-in-repl
+    ;;      :n "e" #'cider-eval-last-sexp
+    ;;      :n "E" #'cider-insert-last-sexp-in-repl
+    ;;      :n "r" #'cider-eval-region
+    ;;      :n "R" #'cider-insert-region-in-repl
+    ;;      :n "u" #'cider-undef
+  )
