@@ -54,7 +54,7 @@
        ;;word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       (dired +icons)             ; making dired pretty [functional]
+       (dired +icons +ranger)             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
        (ibuffer +icons)         ; interactive buffer management
        (undo +tree)              ; persistent, smarter undo for your inevitable mistakes
@@ -121,17 +121,17 @@
        ;;(haskell +dante)  ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
-       json              ; At least it ain't XML
+       ;; json              ; At least it ain't XML
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
-       javascript          ; all(hope(abandon(ye(who(enter(here))))))
+       (javascript +lsp)          ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        ;;latex             ; writing papers in Emacs has never been so fun
        ;;lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs
-       ;;lua               ; one-based indices? one-based indices
-       markdown          ; writing docs for people to ignore
+       ;; lua               ; one-based indices? one-based indices
+       (markdown +grip)          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
@@ -154,7 +154,7 @@
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       (web +lsp)               ; the tubes
+       (web +css +html)               ; the tubes
        (yaml +lsp)              ; JSON, but readable
 
        :email
